@@ -15,51 +15,30 @@ namespace Poc.JobScheduling
         [TestInitialize]
         public void Setup()
         {
-            this.fixture = new Fixture();
+            fixture = new Fixture();
         }
 
         [TestCleanup]
         public void Dispose()
         {
-            this.fixture = null;
+            fixture = null;
         }
 
         [TestMethod]
         public async Task RunAsync_ShouldInvokeRepository()
         {
-            this.fixture.JobScheduleRepositoryMock
-                .Setup(m => m.GetNextJobStartTime(It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(DateTime.Now.AddSeconds(10)));
+            fixture.SetupSingleJobExecution();
 
-            Mock<IJobSchedule> jobMock = new Mock<IJobSchedule>();
-            jobMock
-                .Setup(m => m.ExecuteAsync(It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-
-            this.fixture.JobScheduleRepositoryMock
-                .Setup(m => m.QueryJobsToStart(It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult((IReadOnlyCollection<IJobSchedule>)new[] { jobMock.Object }));
-
-
-            this.fixture.JobScheduleRepositoryMock
-                .Setup(m => m.UpdateAsync(jobMock.Object))
-                .Callback(this.fixture.CancellationTokenSource.Cancel)
-                .Returns(Task.CompletedTask);
-
-            var testObject = this.fixture.CreateTestObject();
+            var testObject = fixture.CreateTestObject();
 
             try
             {
                 await testObject.RunAsync();
             }
             catch (TaskCanceledException)
-            {
-            }
+            { }
 
-            jobMock.Verify(m => m.ExecuteAsync(It.IsAny<CancellationToken>()), Times.Once);
-            this.fixture.JobScheduleRepositoryMock.Verify(m => m.GetNextJobStartTime(It.IsAny<CancellationToken>()), Times.Once);
-            this.fixture.JobScheduleRepositoryMock.Verify(m => m.QueryJobsToStart(It.IsAny<CancellationToken>()), Times.Once);
-            this.fixture.JobScheduleRepositoryMock.Verify(m => m.UpdateAsync(jobMock.Object), Times.Once);
+            fixture.VerifySingleJobExecution();
         }
     }
 }

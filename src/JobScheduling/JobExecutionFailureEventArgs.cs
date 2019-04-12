@@ -2,12 +2,12 @@ using System;
 
 namespace Poc.JobScheduling
 {
-  public sealed class JobExecutionFailureEventArgs : EventArgs
+  public class JobExecutionFailureEventArgs : EventArgs
   {
     public JobExecutionFailureEventArgs(IJob job, Exception exception)
     {
-      this.Job = job;
-      this.Exception = exception;
+      this.Job = job ?? throw new ArgumentNullException(nameof(job));
+      this.Exception = exception ?? throw new ArgumentNullException(nameof(exception));
     }
 
     public IJob Job { get; }

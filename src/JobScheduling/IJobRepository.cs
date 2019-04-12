@@ -9,7 +9,7 @@ namespace Poc.JobScheduling
     {
         event EventHandler JobUpdated;
 
-        Task<DateTime?> GetNextJobStart(CancellationToken cancellationToken);
+        Task<bool> HasActiveJobs(out DateTime nextJobStartTime, CancellationToken cancellationToken);
 
         Task<IReadOnlyCollection<IJob>> QueryJobsToStart(CancellationToken cancellationToken);
 

@@ -2,5 +2,5 @@ using System;
 
 public interface IJobSchedule
 {
-    DateTime? NextStart { get; }
+    DateTime? NextStartTime { get; }
 }
