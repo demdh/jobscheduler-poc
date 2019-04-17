@@ -41,7 +41,7 @@ namespace Poc.JobScheduling
                     .Returns(Task.CompletedTask);
 
                 jobScheduleRepositoryMock
-                    .Setup(m => m.QueryJobsToStart(It.IsAny<CancellationToken>()))
+                    .Setup(m => m.QueryJobsToStart(It.IsAny<DateTime>(), It.IsAny<CancellationToken>()))
                     .Returns(Task.FromResult((IReadOnlyCollection<IJob>)new[] { jobMock.Object }));
 
                 jobScheduleRepositoryMock
@@ -54,7 +54,7 @@ namespace Poc.JobScheduling
             {
                 jobMock.Verify(m => m.ExecuteAsync(It.IsAny<CancellationToken>()), Times.Once);
                 jobScheduleRepositoryMock.Verify(m => m.HasActiveJobs(out nextStartTimeForJob, It.IsAny<CancellationToken>()), Times.Once);
-                jobScheduleRepositoryMock.Verify(m => m.QueryJobsToStart(It.IsAny<CancellationToken>()), Times.Once);
+                jobScheduleRepositoryMock.Verify(m => m.QueryJobsToStart(It.IsAny<DateTime>(), It.IsAny<CancellationToken>()), Times.Once);
                 jobScheduleRepositoryMock.Verify(m => m.UpdateAsync(jobMock.Object), Times.Once);
             }
         }

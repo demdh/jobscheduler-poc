@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 namespace Poc.JobScheduling
 {
+    /// <summary>
+    /// Scheduler for jobs.
+    /// </summary>
     public class JobScheduler : IJobScheduler, IDisposable
     {
         private readonly IJobRepository jobRepository;
@@ -23,12 +26,24 @@ namespace Poc.JobScheduling
             jobRepository.JobUpdated += CancelDelay;
         }
 
+        /// <summary>
+        /// Signals errors during job execution.
+        /// </summary>
         public event EventHandler<JobExecutionFailureEventArgs> JobExecutionFailed;
 
+        /// <summary>
+        /// Gets whether this schedluer instance is running.
+        /// </summary>
         public bool IsRunning => processJobsOnetimeDelegate.IsInvoked;
 
+        /// <summary>
+        /// Gets whether this schedluer instance is canceled.
+        /// </summary>
         public bool IsCanceled => externalToken.IsCancellationRequested;
 
+        /// <summary>
+        /// Dispose the instance.
+        /// </summary>
         public void Dispose()
         {
             if (cancellationTokenSource != null)
@@ -39,6 +54,9 @@ namespace Poc.JobScheduling
             }
         }
 
+        /// <summary>
+        /// Start the job scheduling.
+        /// </summary>
         public async Task RunAsync()
         {
             if (IsCanceled)
@@ -91,7 +109,7 @@ namespace Poc.JobScheduling
 
         private async Task ExecuteJobsAsync()
         {
-            var jobs = await jobRepository.QueryJobsToStart(externalToken);
+            var jobs = await jobRepository.QueryJobsToStart(DateTime.Now, externalToken);
             Parallel.ForEach(jobs, async job => await ExecuteJobAsync(job));
         }
 
