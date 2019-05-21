@@ -10,7 +10,7 @@ namespace Poc.JobScheduling
     {
         private sealed class Fixture
         {
-            private DateTime nextStartTimeForJob;
+            private NextStartTime nextStartTimeForJob;
 
             private Mock<IJobRepository> jobScheduleRepositoryMock; 
             private CancellationTokenSource cancellationTokenSource;
@@ -30,7 +30,7 @@ namespace Poc.JobScheduling
 
             public void SetupSingleJobExecution()
             {
-                nextStartTimeForJob = DateTime.Now.AddSeconds(10);
+                nextStartTimeForJob = NextStartTime.Create(DateTime.Now.AddSeconds(10));
 
                 jobScheduleRepositoryMock
                 .Setup(m => m.HasActiveJobs(out nextStartTimeForJob, It.IsAny<CancellationToken>()))

@@ -91,12 +91,12 @@ namespace Poc.JobScheduling
         private async Task<TimeSpan> GetWaitTimeSpan()
         {
             TimeSpan waitTimesSpan = TimeSpan.FromMilliseconds(-1);
-            DateTime nextJobStartTime;
+            NextStartTime nextJobStartTime;
 
             var hasActiveJobs = await jobRepository.HasActiveJobs(out nextJobStartTime, internalToken);
             if (hasActiveJobs)
             {
-                waitTimesSpan = nextJobStartTime - DateTime.Now;
+                waitTimesSpan = nextJobStartTime.Value - DateTime.Now;
 
                 if (waitTimesSpan < TimeSpan.FromMilliseconds(0)) 
                 {

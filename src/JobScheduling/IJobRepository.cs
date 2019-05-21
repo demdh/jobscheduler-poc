@@ -21,7 +21,7 @@ namespace Poc.JobScheduling
         /// <param name="nextJobStartTime">Gets the time up to which the next job must be executed.</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns><c>true</c> if there repository contains job which have to be executed at the given time, else <c>false</c>.</returns>
-        Task<bool> HasActiveJobs(out DateTime nextJobStartTime, CancellationToken cancellationToken);
+        Task<bool> HasActiveJobs(out NextStartTime nextJobStartTime, CancellationToken cancellationToken);
 
         /// <summary>
         /// Queries all jobs that have been scheduled for the given time or earlier.
